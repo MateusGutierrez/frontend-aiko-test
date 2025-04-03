@@ -14,13 +14,21 @@ import {
 import { IEquipment } from '@/zustand/interface';
 import { useStore } from 'zustand';
 import useEquipmentStore from '@/zustand';
-import { head } from 'lodash';
-
+import { FaTruck } from 'react-icons/fa';
+import { TbFiretruck } from 'react-icons/tb';
+import { GiTowTruck } from 'react-icons/gi';
+import { includes } from 'lodash';
 interface CardProps {
   className?: string;
   equipment: IEquipment;
   setActiveId: (value: string) => void;
 }
+
+const MODELS = {
+  CA: <FaTruck />,
+  HV: <TbFiretruck />,
+  GT: <GiTowTruck />
+};
 
 export function ExpansibleCard({
   className,
@@ -29,17 +37,22 @@ export function ExpansibleCard({
   ...props
 }: CardProps) {
   const { equipmentModel } = useStore(useEquipmentStore);
-  const model_information = head(
-    equipmentModel.filter(model => model.id === equipment.equipmentModelId)
+  const model_information = equipmentModel.find(
+    model => model.id === equipment.equipmentModelId
   );
-
+  const get_icon = Object.keys(MODELS).find(key =>
+    includes(equipment.name, key)
+  );
   return (
     <AccordionItem value={equipment.id}>
       <AccordionTrigger
-        className="cursor-pointer"
+        className="px-4 cursor-pointer hover:no-underline hover:bg-muted"
         onClick={() => setActiveId(equipment.id)}
       >
-        {equipment.name}
+        <div className="flex items-center gap-2">
+          {MODELS[get_icon as keyof typeof MODELS]}
+          {equipment.name}
+        </div>
       </AccordionTrigger>
       <AccordionContent>
         <Card className={cn('w-full', className)} {...props}>
