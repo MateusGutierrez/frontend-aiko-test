@@ -1,8 +1,24 @@
 import Content from '@/components/content';
 import Map from '@/components/map';
 import { ScrollAreaComponent } from '@/components/scroll-area';
+import { Context } from '@/provider';
+import useEquipmentStore from '@/zustand';
+import { isEmpty } from 'lodash';
+import { useContext, useEffect, useState } from 'react';
+import { useStore } from 'zustand';
 
 const Home: React.FC = () => {
+  const { fetch_all_data } = useContext(Context);
+  const { equipments, equipmentPositionHistory } = useStore(useEquipmentStore);
+  const [activeId, setActiveId] = useState<string>('');
+
+  useEffect(() => {
+    if (isEmpty(equipments)) {
+      fetch_all_data();
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   return (
     <Content>
       <section>
@@ -19,12 +35,16 @@ const Home: React.FC = () => {
                 <p>3 - O histórico de estados de um determinado equipamento;</p>
               </div>
             </p>
-            {/* <h1>Dados JSON</h1>
-            <pre>{JSON.stringify(dados, null, 2)}</pre> */}
             <div className="flex justify-between">
-              <ScrollAreaComponent />
+              <ScrollAreaComponent
+                equipments={equipments}
+                setActiveId={setActiveId}
+              />
               <div className="h-[500px] w-[60%]">
-                <Map />
+                <Map
+                  equipmentPositions={equipmentPositionHistory}
+                  activeId={activeId}
+                />
               </div>
             </div>
           </div>

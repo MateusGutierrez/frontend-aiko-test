@@ -1,21 +1,22 @@
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { IEquipment } from '@/zustand/interface';
+import { Accordion } from '@/components/ui/accordion';
+import { ExpansibleCard } from './expansible-card';
 
-const tags = Array.from({ length: 50 }).map(
-  (_, i, a) => `v1.2.0-beta.${a.length - i}`
-);
+interface Props {
+  equipments: IEquipment[];
+  setActiveId: (value: string) => void;
+}
 
-export function ScrollAreaComponent() {
+export function ScrollAreaComponent({ equipments, setActiveId }: Props) {
   return (
     <ScrollArea className="h-[500px] w-[35%] rounded-md border">
       <div className="p-4">
-        <h4 className="mb-4 text-sm font-medium leading-none">Tags</h4>
-        {tags.map(tag => (
-          <>
-            <div key={tag} className="text-sm">
-              {tag}
-            </div>
-          </>
-        ))}
+        <Accordion type="single" collapsible className="w-full">
+          {equipments.map((equipment: IEquipment) => (
+            <ExpansibleCard equipment={equipment} setActiveId={setActiveId} />
+          ))}
+        </Accordion>
       </div>
     </ScrollArea>
   );
