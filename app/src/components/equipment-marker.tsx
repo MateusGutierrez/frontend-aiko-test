@@ -1,11 +1,13 @@
 import { useEffect, useState, useMemo } from 'react';
-import { Marker, Popup, Tooltip, useMap } from 'react-leaflet';
+import { Marker, Tooltip, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import { IEquipmentPositionHistory } from '@/zustand/interface';
 import { last } from 'lodash';
 import { useStore } from 'zustand';
 import useEquipmentStore from '@/zustand';
 import { MARKERS } from './create-icon';
+import useIsVisible from '@/hooks/useIsVisible';
+import { Modal } from './modal';
 
 interface EquipmentMarkerProps {
   activeId: string;
@@ -25,8 +27,20 @@ export function EquipmentMarker({
   equipmentPositions
 }: EquipmentMarkerProps) {
   const [position, setPosition] = useState<[number, number] | null>(null);
+  const { show, isVisible, hide } = useIsVisible();
   const map = useMap();
-  const { equipmentStateHistory, equipmentState } = useStore(useEquipmentStore);
+  const { equipmentStateHistory, equipmentState, equipments, equipmentModel } =
+    useStore(useEquipmentStore);
+  const state__history_information = equipmentStateHistory.find(
+    state => state.equipmentId === equipmentId
+  );
+  const get_equipment_by_id = equipments.find(
+    equipment => equipment.id === equipmentId
+  );
+  const get_model_by_id = equipmentModel.find(
+    equipment => equipment.id === get_equipment_by_id?.equipmentModelId
+  );
+
   const equipmentHistory = useMemo(
     () => equipmentStateHistory.find(item => item.equipmentId === equipmentId),
     [equipmentStateHistory, equipmentId]
@@ -56,11 +70,15 @@ export function EquipmentMarker({
   return (
     <>
       {position && date && (
-        <Marker position={position} icon={markerIcon}>
-          <Popup>
-            Equipamento {equipmentId}{' '}
-            {activeId === equipmentId && '(Selecionado)'}
-          </Popup>
+        <Marker
+          position={position}
+          icon={markerIcon}
+          eventHandlers={{
+            click: () => {
+              show();
+            }
+          }}
+        >
           <Tooltip>
             <div>
               <p className={`text-[${getState?.color}]`}>{getState?.name}</p>
@@ -70,8 +88,15 @@ export function EquipmentMarker({
         </Marker>
       )}
       {lat !== undefined && lon !== undefined && (
-        <Marker position={[lat, lon]} icon={markerIcon}>
-          <Popup>Equipamento {equipmentId}</Popup>
+        <Marker
+          position={[lat, lon]}
+          icon={markerIcon}
+          eventHandlers={{
+            click: () => {
+              show();
+            }
+          }}
+        >
           {date && (
             <Tooltip>
               <div>
@@ -82,6 +107,13 @@ export function EquipmentMarker({
           )}
         </Marker>
       )}
+      <Modal
+        isVisible={isVisible}
+        hide={hide}
+        stateDefinitions={equipmentState}
+        states={state__history_information?.states}
+        equipmentName={`${get_equipment_by_id?.name} - ${get_model_by_id?.name}`}
+      />
     </>
   );
 }

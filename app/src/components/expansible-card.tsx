@@ -1,11 +1,5 @@
 import { cn } from '@/lib/utils';
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import {
   AccordionContent,
   AccordionItem,
@@ -18,6 +12,9 @@ import { FaTruck } from 'react-icons/fa';
 import { TbFiretruck } from 'react-icons/tb';
 import { GiTowTruck } from 'react-icons/gi';
 import { includes } from 'lodash';
+import { Button } from './ui/button';
+import useIsVisible from '@/hooks/useIsVisible';
+import { Modal } from './modal';
 interface CardProps {
   className?: string;
   equipment: IEquipment;
@@ -36,13 +33,19 @@ export function ExpansibleCard({
   setActiveId,
   ...props
 }: CardProps) {
-  const { equipmentModel } = useStore(useEquipmentStore);
+  const { show, isVisible, hide } = useIsVisible();
+  const { equipmentModel, equipmentStateHistory, equipmentState } =
+    useStore(useEquipmentStore);
   const model_information = equipmentModel.find(
     model => model.id === equipment.equipmentModelId
   );
   const get_icon = Object.keys(MODELS).find(key =>
     includes(equipment.name, key)
   );
+  const state__history_information = equipmentStateHistory.find(
+    state => state.equipmentId === equipment.id
+  );
+
   return (
     <AccordionItem value={equipment.id}>
       <AccordionTrigger
@@ -61,26 +64,21 @@ export function ExpansibleCard({
               <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
               <CardTitle>{model_information?.name}</CardTitle>
             </div>
-            <CardDescription className="pl-6">
-              {model_information?.id}
-            </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div>
+              <Button onClick={() => show()}>Mais Informações</Button>
+              <Modal
+                isVisible={isVisible}
+                hide={hide}
+                stateDefinitions={equipmentState}
+                equipmentName={`${equipment.name} - ${model_information?.name}`}
+                states={state__history_information?.states}
+              />
               <div
                 key={equipment.id}
                 className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
-              >
-                <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-                <div className="space-y-1">
-                  <p className="text-sm font-medium leading-none">
-                    {equipment.name}
-                  </p>
-                  <p className="text-sm text-muted-foreground">
-                    {equipment.id}
-                  </p>
-                </div>
-              </div>
+              ></div>
             </div>
           </CardContent>
         </Card>

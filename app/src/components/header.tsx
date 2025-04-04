@@ -1,11 +1,4 @@
 import { ModeToggle } from './mode-toggle';
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  navigationMenuTriggerStyle
-} from '@/components/ui/navigation-menu';
 import paths from '@/routes/paths';
 import { Menu } from 'lucide-react';
 import React, { useCallback, useState } from 'react';
@@ -33,18 +26,6 @@ const Header: React.FC = () => {
           />
         </div>
         <nav className="hidden md:flex gap-6">
-          <NavigationMenu>
-            <NavigationMenuList>
-              <NavigationMenuItem className="cursor-pointer">
-                <NavigationMenuLink
-                  className={navigationMenuTriggerStyle()}
-                  onClick={() => navigateOnClick(paths.home)}
-                >
-                  Home
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-            </NavigationMenuList>
-          </NavigationMenu>
           <ModeToggle />
         </nav>
         <div className="md:hidden flex items-center gap-4">

@@ -13,8 +13,12 @@ export function ScrollAreaComponent({ equipments, setActiveId }: Props) {
     <ScrollArea className="h-[500px] w-[35%] rounded-md border">
       <div className="p-4">
         <Accordion type="single" collapsible className="w-full">
-          {equipments.map((equipment: IEquipment) => (
-            <ExpansibleCard equipment={equipment} setActiveId={setActiveId} />
+          {equipments.map((equipment: IEquipment, index) => (
+            <ExpansibleCard
+              equipment={equipment}
+              setActiveId={setActiveId}
+              key={index}
+            />
           ))}
         </Accordion>
       </div>
