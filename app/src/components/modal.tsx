@@ -3,13 +3,13 @@ import {
   Dialog,
   DialogContent,
   DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter
+  DialogTitle
 } from '@/components/ui/dialog';
-import { Button } from '@/components/ui/button';
-import { EquipmentStateHistoryTable, EquipmentStateLog } from './table';
+import EquipmentStateHistoryTable, { EquipmentStateLog } from './table';
 import { IEquipmentState, IStates } from '@/zustand/interface';
+import { ScrollArea } from './ui/scroll-area';
+import ModalTabs from './tabs';
+import { HistoryPositionMap } from './maps';
 
 interface Props {
   isVisible: boolean;
@@ -17,6 +17,7 @@ interface Props {
   equipmentName: string;
   states?: IStates[];
   stateDefinitions?: IEquipmentState[];
+  equipmentId: string;
 }
 
 function normalizeStates(states?: IStates[], definitions?: IEquipmentState[]) {
@@ -37,13 +38,14 @@ function normalizeStates(states?: IStates[], definitions?: IEquipmentState[]) {
   });
 }
 
-export function Modal({
+const Modal: React.FC<Props> = ({
   isVisible,
   hide,
   equipmentName,
   states,
-  stateDefinitions
-}: Props) {
+  stateDefinitions,
+  equipmentId
+}) => {
   const data = React.useMemo(
     () => normalizeStates(states, stateDefinitions),
     [states, stateDefinitions]
@@ -51,22 +53,28 @@ export function Modal({
 
   return (
     <Dialog open={isVisible} onOpenChange={hide}>
-      <DialogContent className="z-[9999] sm:max-w-[70vw] sm:w-[90%] max-h-[80vh] h-[80vh] overflow-y-auto">
+      <DialogContent className="z-[9999] sm:max-w-[70vw] sm:w-[90%] max-h-[100vh] h-[90vh]">
         <DialogHeader>
-          <DialogTitle>Histórico de Estados</DialogTitle>
-          <DialogDescription>
-            Estados do equipamento{' '}
-            <span className="font-semibold">{equipmentName}</span>
-          </DialogDescription>
+          <DialogTitle>{equipmentName}</DialogTitle>
         </DialogHeader>
-        <div className="rounded-md border">
-          <EquipmentStateHistoryTable data={data as EquipmentStateLog[]} />
-        </div>
-
-        <DialogFooter className="mt-6">
-          <Button onClick={hide}>Fechar</Button>
-        </DialogFooter>
+        <ScrollArea className="h-[70vh]">
+          <ModalTabs
+            firstChildren={
+              <div className="rounded-md border">
+                <EquipmentStateHistoryTable
+                  data={data as EquipmentStateLog[]}
+                />
+              </div>
+            }
+            secondChildren={
+              <div className="flex justify-center items-center">
+                <HistoryPositionMap equipmentId={equipmentId} />
+              </div>
+            }
+          />
+        </ScrollArea>
       </DialogContent>
     </Dialog>
   );
-}
+};
+export default Modal;

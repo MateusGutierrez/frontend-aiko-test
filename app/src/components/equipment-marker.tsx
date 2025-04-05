@@ -7,7 +7,7 @@ import { useStore } from 'zustand';
 import useEquipmentStore from '@/zustand';
 import { MARKERS } from './create-icon';
 import useIsVisible from '@/hooks/useIsVisible';
-import { Modal } from './modal';
+import Modal from './modal';
 
 interface EquipmentMarkerProps {
   activeId: string;
@@ -18,29 +18,26 @@ interface EquipmentMarkerProps {
   equipmentPositions: IEquipmentPositionHistory[];
 }
 
-export function EquipmentMarker({
+const EquipmentMarker: React.FC<EquipmentMarkerProps> = ({
   activeId,
   equipmentId,
   lat,
   lon,
   date,
   equipmentPositions
-}: EquipmentMarkerProps) {
+}) => {
   const [position, setPosition] = useState<[number, number] | null>(null);
   const { show, isVisible, hide } = useIsVisible();
   const map = useMap();
   const { equipmentStateHistory, equipmentState, equipments, equipmentModel } =
     useStore(useEquipmentStore);
-  const state__history_information = equipmentStateHistory.find(
+  const stateHistory = equipmentStateHistory.find(
     state => state.equipmentId === equipmentId
   );
-  const get_equipment_by_id = equipments.find(
-    equipment => equipment.id === equipmentId
+  const equipment = equipments.find(equipment => equipment.id === equipmentId);
+  const model = equipmentModel.find(
+    item => item.id === equipment?.equipmentModelId
   );
-  const get_model_by_id = equipmentModel.find(
-    equipment => equipment.id === get_equipment_by_id?.equipmentModelId
-  );
-
   const equipmentHistory = useMemo(
     () => equipmentStateHistory.find(item => item.equipmentId === equipmentId),
     [equipmentStateHistory, equipmentId]
@@ -111,9 +108,11 @@ export function EquipmentMarker({
         isVisible={isVisible}
         hide={hide}
         stateDefinitions={equipmentState}
-        states={state__history_information?.states}
-        equipmentName={`${get_equipment_by_id?.name} - ${get_model_by_id?.name}`}
+        states={stateHistory?.states}
+        equipmentName={`${equipment?.name} - ${model?.name}`}
+        equipmentId={equipmentId}
       />
     </>
   );
-}
+};
+export default EquipmentMarker;

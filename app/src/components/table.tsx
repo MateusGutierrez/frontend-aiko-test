@@ -70,7 +70,7 @@ const columns: ColumnDef<EquipmentStateLog>[] = [
   }
 ];
 
-export function EquipmentStateHistoryTable({ data }: Props) {
+const EquipmentStateHistoryTable: React.FC<Props> = ({ data }) => {
   const [sorting, setSorting] = useState<SortingState>([
     { id: 'originalDate', desc: true }
   ]);
@@ -158,10 +158,6 @@ export function EquipmentStateHistoryTable({ data }: Props) {
         </Table>
       </div>
       <div className="flex items-center justify-end space-x-2 py-4 px-2">
-        <div className="flex-1 text-sm text-muted-foreground">
-          {table.getFilteredSelectedRowModel().rows.length} de{' '}
-          {table.getFilteredRowModel().rows.length} selecionados.
-        </div>
         <div className="space-x-2">
           <Button
             variant="outline"
@@ -183,4 +179,5 @@ export function EquipmentStateHistoryTable({ data }: Props) {
       </div>
     </div>
   );
-}
+};
+export default EquipmentStateHistoryTable;

@@ -17,4 +17,6 @@ export interface IContext {
   get_equipment_state: () => Promise<IEquipmentState[]>;
   get_equipment_state_history: () => Promise<IEquipmentStateHistory[]>;
   fetch_all_data: () => void;
+  fetch_route: (coordinates: [number, number][]) => Promise<void>;
+  route: [number, number][] | [];
 }

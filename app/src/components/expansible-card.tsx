@@ -14,11 +14,13 @@ import { GiTowTruck } from 'react-icons/gi';
 import { includes } from 'lodash';
 import { Button } from './ui/button';
 import useIsVisible from '@/hooks/useIsVisible';
-import { Modal } from './modal';
+import Modal from './modal';
+import { useCallback } from 'react';
 interface CardProps {
   className?: string;
   equipment: IEquipment;
   setActiveId: (value: string) => void;
+  activeId: string;
 }
 
 const MODELS = {
@@ -27,12 +29,13 @@ const MODELS = {
   GT: <GiTowTruck />
 };
 
-export function ExpansibleCard({
+const ExpansibleCard: React.FC<CardProps> = ({
   className,
   equipment,
   setActiveId,
+  activeId,
   ...props
-}: CardProps) {
+}) => {
   const { show, isVisible, hide } = useIsVisible();
   const { equipmentModel, equipmentStateHistory, equipmentState } =
     useStore(useEquipmentStore);
@@ -46,11 +49,16 @@ export function ExpansibleCard({
     state => state.equipmentId === equipment.id
   );
 
+  const click = useCallback(
+    () =>
+      activeId === equipment.id ? setActiveId('') : setActiveId(equipment.id),
+    [activeId, equipment.id, setActiveId]
+  );
   return (
     <AccordionItem value={equipment.id}>
       <AccordionTrigger
         className="px-4 cursor-pointer hover:no-underline hover:bg-muted"
-        onClick={() => setActiveId(equipment.id)}
+        onClick={click}
       >
         <div className="flex items-center gap-2">
           {MODELS[get_icon as keyof typeof MODELS]}
@@ -74,6 +82,7 @@ export function ExpansibleCard({
                 stateDefinitions={equipmentState}
                 equipmentName={`${equipment.name} - ${model_information?.name}`}
                 states={state__history_information?.states}
+                equipmentId={equipment.id}
               />
               <div
                 key={equipment.id}
@@ -85,4 +94,5 @@ export function ExpansibleCard({
       </AccordionContent>
     </AccordionItem>
   );
-}
+};
+export default ExpansibleCard;

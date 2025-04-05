@@ -1,20 +1,9 @@
-import { ModeToggle } from './mode-toggle';
-import paths from '@/routes/paths';
-import { Menu } from 'lucide-react';
-import React, { useCallback, useState } from 'react';
-import { useNavigate } from 'react-router';
+import ModeToggle from './mode-toggle';
+import React from 'react';
 
 const url = import.meta.env.VITE_JSON_URL;
 
 const Header: React.FC = () => {
-  const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
-  const navigateOnClick = useCallback(
-    (path: string) => {
-      navigate(path);
-    },
-    [navigate]
-  );
   return (
     <header className="flex w-full bg-popover text-foreground items-center border-b border-border">
       <div className="flex justify-between max-w-[90%] w-full items-center mx-auto py-3 px-4">
@@ -30,24 +19,8 @@ const Header: React.FC = () => {
         </nav>
         <div className="md:hidden flex items-center gap-4">
           <ModeToggle />
-          <button onClick={() => setIsOpen(!isOpen)}>
-            <Menu size={24} />
-          </button>
         </div>
       </div>
-
-      {isOpen && (
-        <div className="md:hidden absolute top-16 left-0 w-full bg-popover shadow-md">
-          <nav className="flex flex-col items-center border">
-            <div
-              className="text-lg border-b w-full text-center flex justify-center cursor-pointer"
-              onClick={() => navigateOnClick(paths.home)}
-            >
-              Home
-            </div>
-          </nav>
-        </div>
-      )}
     </header>
   );
 };
