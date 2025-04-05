@@ -1,4 +1,3 @@
-import { Card } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Props {
@@ -20,7 +19,7 @@ const ModalTabs: React.FC<Props> = ({ firstChildren, secondChildren }) => (
       {firstChildren}
     </TabsContent>
     <TabsContent value="second" className="p-2">
-      <Card>{secondChildren}</Card>
+      {secondChildren}
     </TabsContent>
   </Tabs>
 );

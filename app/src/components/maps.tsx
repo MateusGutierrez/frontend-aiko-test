@@ -33,7 +33,6 @@ export const HistoryPositionMap: React.FC<HistoryPositionMapProps> = ({
   const selectedEquipment = equipmentPositionHistory.find(
     e => e.equipmentId === equipmentId
   );
-
   const pathCoordinates = useMemo<[number, number][]>(() => {
     if (!selectedEquipment || !selectedEquipment.positions) return [];
     return selectedEquipment.positions.map(pos => [pos.lat, pos.lon]);

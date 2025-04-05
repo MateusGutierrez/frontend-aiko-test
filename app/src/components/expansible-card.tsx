@@ -16,6 +16,8 @@ import { Button } from './ui/button';
 import useIsVisible from '@/hooks/useIsVisible';
 import Modal from './modal';
 import { useCallback } from 'react';
+import { useEquipmentProductivity } from '@/hooks/useEquipmentProductivity';
+import { useEquipmentEarnings } from '@/hooks/useEquipmentEarnings';
 interface CardProps {
   className?: string;
   equipment: IEquipment;
@@ -39,13 +41,13 @@ const ExpansibleCard: React.FC<CardProps> = ({
   const { show, isVisible, hide } = useIsVisible();
   const { equipmentModel, equipmentStateHistory, equipmentState } =
     useStore(useEquipmentStore);
-  const model_information = equipmentModel.find(
+  const modelInformation = equipmentModel.find(
     model => model.id === equipment.equipmentModelId
   );
-  const get_icon = Object.keys(MODELS).find(key =>
+  const getIcon = Object.keys(MODELS).find(key =>
     includes(equipment.name, key)
   );
-  const state__history_information = equipmentStateHistory.find(
+  const stateHistoryInformation = equipmentStateHistory.find(
     state => state.equipmentId === equipment.id
   );
 
@@ -54,6 +56,14 @@ const ExpansibleCard: React.FC<CardProps> = ({
       activeId === equipment.id ? setActiveId('') : setActiveId(equipment.id),
     [activeId, equipment.id, setActiveId]
   );
+  const productivity = useEquipmentProductivity({
+    equipmentStateHistory: stateHistoryInformation,
+    states: equipmentState
+  });
+  const gain = useEquipmentEarnings({
+    equipmentStateHistory: stateHistoryInformation,
+    equipmentModel: modelInformation
+  });
   return (
     <AccordionItem value={equipment.id}>
       <AccordionTrigger
@@ -61,33 +71,39 @@ const ExpansibleCard: React.FC<CardProps> = ({
         onClick={click}
       >
         <div className="flex items-center gap-2">
-          {MODELS[get_icon as keyof typeof MODELS]}
+          {MODELS[getIcon as keyof typeof MODELS]}
           {equipment.name}
         </div>
       </AccordionTrigger>
       <AccordionContent>
         <Card className={cn('w-full', className)} {...props}>
-          <CardHeader>
+          <CardHeader className="flex flex-col gap-4">
             <div className="flex gap-4">
               <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
-              <CardTitle>{model_information?.name}</CardTitle>
+              <CardTitle>{modelInformation?.name}</CardTitle>
+            </div>
+            <div className="flex gap-4">
+              <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+              <CardTitle>Produtividade: {productivity.toFixed(2)}% </CardTitle>
+            </div>
+            <div className="flex gap-4">
+              <span className="flex h-2 w-2 translate-y-1 rounded-full bg-sky-500" />
+              <CardTitle>Rendimento: R$ {gain.toFixed(2)}</CardTitle>
             </div>
           </CardHeader>
           <CardContent className="grid gap-4">
             <div>
-              <Button onClick={() => show()}>Mais Informações</Button>
+              <Button onClick={() => show()}>
+                <p className="text-black">Mais Informações</p>
+              </Button>
               <Modal
                 isVisible={isVisible}
                 hide={hide}
                 stateDefinitions={equipmentState}
-                equipmentName={`${equipment.name} - ${model_information?.name}`}
-                states={state__history_information?.states}
+                equipmentName={`${equipment.name} - ${modelInformation?.name}`}
+                states={stateHistoryInformation?.states}
                 equipmentId={equipment.id}
               />
-              <div
-                key={equipment.id}
-                className="mb-4 grid grid-cols-[25px_1fr] items-start pb-4 last:mb-0 last:pb-0"
-              ></div>
             </div>
           </CardContent>
         </Card>

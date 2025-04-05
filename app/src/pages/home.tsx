@@ -12,7 +12,6 @@ const Home: React.FC = () => {
   const { fetch_all_data } = useContext(Context);
   const { equipments, equipmentPositionHistory } = useStore(useEquipmentStore);
   const [activeId, setActiveId] = useState<string>('');
-
   useEffect(() => {
     if (isEmpty(equipments)) {
       fetch_all_data();
