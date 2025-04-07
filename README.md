@@ -1,8 +1,16 @@
 # Desafio - Desenvolvedor Front-end
 
-Este repositório contém a implementação do teste de Front-end, utilizando as tecnologias:
+Este repositório contém a implementação do teste de Front-end: [https://github.com/aikodigital/teste-frontend-v4](https://github.com/aikodigital/teste-frontend-v4).
 
-- **Front-end:** React com Vite, tailwind CSS, zustand, react-leaflet, react router e shadcn/ui;
+Para executar o projeto, é necessário criar um arquivo .env com as seguintes variáveis:
+
+VITE_JSON_URL: URL do repositório de teste
+https://raw.githubusercontent.com/aikodigital/teste-frontend-v4/master
+
+VITE_ORS_API_KEY: Chave de acesso à API
+
+VITE_ORS_URL: URL da API de cálculo de rotas
+https://api.openrouteservice.org/v2/directions/driving-car/geojson
 
 ## Como Rodar o Projeto
 
@@ -25,11 +33,9 @@ Este repositório contém a implementação do teste de Front-end, utilizando as
 
 ## Deploy
 
-### Front-end
 O projeto está hospedado em: [https://frontend-aiko-test.vercel.app/](https://frontend-aiko-test.vercel.app/)
 
 ## Tecnologias Utilizadas
-### Front-end
 - React com Vite
 - Tailwind CSS
 - Zustand (Gerenciamento de Estado)
