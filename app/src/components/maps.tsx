@@ -25,6 +25,8 @@ interface MapProps {
   setActiveId: (value: string) => void;
 }
 
+const ORIGIN: [number, number] = [-19.2395, -46.0697];
+
 export const HistoryPositionMap: React.FC<HistoryPositionMapProps> = ({
   equipmentId
 }) => {
@@ -47,7 +49,7 @@ export const HistoryPositionMap: React.FC<HistoryPositionMapProps> = ({
   const end = last(selectedEquipment?.positions);
   return (
     <MapContainer
-      center={head(pathCoordinates) || [-19.2395, -46.0697]}
+      center={head(pathCoordinates) || ORIGIN}
       zoom={10}
       scrollWheelZoom={true}
       className="h-[55vh] w-[80%] rounded-lg"
@@ -83,7 +85,7 @@ export const Map: React.FC<MapProps> = ({
   setActiveId
 }) => (
   <MapContainer
-    center={[-19.2395, -46.0697]}
+    center={ORIGIN}
     zoom={10}
     scrollWheelZoom={true}
     className="h-[500px] w-full rounded-lg"
